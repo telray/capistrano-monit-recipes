@@ -6,7 +6,7 @@ module Capistrano
 
       def monit_config(name, destination = nil)
         destination ||= "/etc/monit/conf.d/#{name}.conf"
-        template "monit/#{name}.erb", "/tmp/#{name}"
+        template name, "/tmp/#{name}"
 
         execute :sudo, :mv, "/tmp/#{name} #{destination}"
         execute :sudo, :chown, "root #{destination}"
