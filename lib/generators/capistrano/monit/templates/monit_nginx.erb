@@ -1,0 +1,5 @@
+check process nginx with pidfile <%= fetch :monit_nginx_pid %>
+  start program = "service nginx start"
+  stop program = "service nginx stop"
+  if children > 250 then restart
+  if 5 restarts within 5 cycles then timeout

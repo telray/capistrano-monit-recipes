@@ -1,0 +1,17 @@
+check process <%= fetch :monit_unicorn_process_name %> with pidfile <%= fetch :monit_unicorn_pid %>
+  start program = "service <%= fetch :monit_unicorn_service_name %> start"
+  stop program = "service <%= fetch :monit_unicorn_service_name %> stop"
+
+<% fetch :monit_unicorn_workers_number.times do |n| %>
+  <% pid = fetch(:monit_unicorn_pid).sub(".pid", ".#{n}.pid") %>
+  check process <%= fetch :monit_unicorn_worker_process_name %><%= n %> with pidfile <%= pid %>
+    start program = "/bin/true"
+    stop program = "/usr/bin/test -s <%= pid %> && /bin/kill -QUIT `cat <%= pid %>`"
+    if mem > 200.0 MB for 1 cycles then restart
+    if cpu > 50% for 3 cycles then restart
+    if 5 restarts within 5 cycles then timeout
+    <% unless fetch(:monit_alert_email).nil? %>
+      alert <%= fetch :monit_alert_email %> only on { pid }
+    <% end %>      
+    if changed pid 2 times within 60 cycles then alert
+<% end %>
