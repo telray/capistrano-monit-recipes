@@ -38,9 +38,9 @@ namespace :monit do
   desc 'Setup all Monit configuration'
   task :setup do
     monit_config 'monitrc', fetch(:monitrc_path)
-    monit_config 'monit_nginx'      if fetch(:monit_configure_nginx)?
+    monit_config 'monit_nginx' if fetch(:monit_configure_nginx)?
     monit_config 'monit_postgresql' if fetch(:monit_configure_postgresql)?
-    monit_config 'monit_unicorn'    if fetch(:monit_configure_unicorn)?
+    monit_config 'monit_unicorn' if fetch(:monit_configure_unicorn)?
     syntax
     reload
   end
