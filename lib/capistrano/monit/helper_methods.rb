@@ -14,11 +14,11 @@ module Capistrano
       end
 
       def template(template_name, to)
-        config_file = "#{fetch(:monit_templates_path)}/#{template_name}"
+        config_file = "#{fetch(:monit_templates_path)}/#{template_name}.erb"
         # If there's no customized file in your rails app template directory,
         # proceed with the default.
         unless File.exists?(config_file)
-          default_config_path = "../../generators/capistrano/monit/templates/#{template_name}"
+          default_config_path = "../../generators/capistrano/monit/templates/#{template_name}.erb"
           config_file = File.join(File.dirname(__FILE__), default_config_path)
         end
         template_file = ERB.new(File.read(config_file)).result(binding)
