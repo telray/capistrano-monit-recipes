@@ -4,29 +4,28 @@ module Capistrano
   module Monit
     module HelperMethods
 
-      def monit_config(name, destination = nil)
-        destination ||= "/etc/monit/conf.d/#{name}.conf"
-        template name, "/tmp/#{name}"
-
-        execute :sudo, :mv, "/tmp/#{name} #{destination}"
-        execute :sudo, :chown, "root #{destination}"
-        execute :sudo, :chmod, "600 #{destination}"
-      end
-
-      def template(template_name, to)
+      def monit_template(template_name)
         config_file = "#{fetch(:monit_templates_path)}/#{template_name}.erb"
-        # If there's no customized file in your rails app template directory,
-        # proceed with the default.
         unless File.exists?(config_file)
           default_config_path = "../../generators/capistrano/monit/templates/#{template_name}.erb"
           config_file = File.join(File.dirname(__FILE__), default_config_path)
         end
-        template_file = ERB.new(File.read(config_file)).result(binding)
-        upload! StringIO.new(template_file), to
-
-        execute :sudo, :chmod, "644 #{to}"
+        StringIO.new ERB.new(File.read(config_file)).result(binding)
       end
-      
+
+      def tmp_path(process_name)
+        "/tmp/#{process_name}"
+      end
+
+      def final_path(name, path = nil)
+        path ||= "/etc/monit/conf.d/#{name}.conf"
+
+        execute :sudo, :chmod, "644 #{tmp_path(name)}"
+        execute :sudo, :mv, "#{tmp_path(name)} #{path}"
+        execute :sudo, :chown, "root #{path}"
+        execute :sudo, :chmod, "600 #{path}"
+      end
+
     end
   end
 end

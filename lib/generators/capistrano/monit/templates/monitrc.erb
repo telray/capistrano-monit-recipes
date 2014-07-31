@@ -14,14 +14,14 @@ set mailserver smtp.gmail.com port 587
   using tlsv1
   with timeout 30 seconds
 
-<% unless fetch(:monit_alert_email).nil? %>
-  set alert <%= fetch :monit_alert_email %>
+<%= "set alert #{fetch(:monit_alert_email)}" unless fetch(:monit_alert_email).nil? %>
+
+<% unless fetch(:monit_password).nil? %>
+set httpd port <%= fetch :monit_port %>
+  allow admin:"<%= fetch :monit_password %>"
 <% end %>
 
-set httpd port 2816
-  allow admin:"<%= fetch :monit_password %>"
-
-check system blog_server
+check system <%= "#{fetch(:application)}_#{fetch(:stage)}" %>
   if loadavg(5min) > 2 for 2 cycles then alert
   if memory > 75% for 2 cycles then alert
   if cpu(user) > 75% for 2 cycles then alert
