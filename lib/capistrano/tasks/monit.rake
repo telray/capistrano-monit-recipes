@@ -78,9 +78,12 @@ namespace :monit do
     end
   end
 
-  after 'deploy:started', 'monit:reload'
+  # after 'deploy:started', 'monit:reload'
 end
 
+namespace :deploy do
+  after :started, 'monit:reload'
+end
 
 desc 'Server setup tasks'
 task :setup do
