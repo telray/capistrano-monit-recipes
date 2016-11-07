@@ -78,16 +78,18 @@ namespace :monit do
     end
   end
 
+  desc 'Server setup tasks'
+  task :setup do
+    invoke 'monit:generate_config' if fetch(:monit_configure_self)
+    invoke 'monit:generate_nginx_config' if fetch(:monit_configure_nginx)
+    invoke 'monit:generate_postgresql_config' if fetch(:monit_configure_postgresql)
+    invoke 'monit:generate_unicorn_config' if fetch(:monit_configure_unicorn)
+    invoke 'monit:syntax'
+    invoke 'monit:reload'
+  end
+
   after 'deploy:started', 'monit:reload'
-
+  after 'deploy:setup', 'monit:setup'
 end
 
-desc 'Server setup tasks'
-task :setup do
-  invoke 'monit:generate_config' if fetch(:monit_configure_self)
-  invoke 'monit:generate_nginx_config' if fetch(:monit_configure_nginx)
-  invoke 'monit:generate_postgresql_config' if fetch(:monit_configure_postgresql)
-  invoke 'monit:generate_unicorn_config' if fetch(:monit_configure_unicorn)
-  invoke 'monit:syntax'
-  invoke 'monit:reload'
-end
+
