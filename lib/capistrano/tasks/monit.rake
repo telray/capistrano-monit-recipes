@@ -89,7 +89,6 @@ namespace :monit do
   end
 
   after 'deploy:started', 'monit:reload'
-  after 'deploy:setup', 'monit:setup'
 end
 
 
