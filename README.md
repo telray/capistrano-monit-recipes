@@ -24,7 +24,7 @@ Put the following in your application's `Gemfile`:
 
     group :development do
       gem 'capistrano', '~> 3.1'
-      gem 'capistrano-monit-recipes'
+      gem 'capistrano-monit-recipes', git: 'git://github.com/telray/capistrano-monit-recipes'
     end
 
 Then:
@@ -62,6 +62,7 @@ Put all your configs in capistrano stage or deploy files i.e:
 Here's the list of options and the defaults for each option:
 
 ```ruby
+set :monit_configure_self, false
 set :monit_configure_nginx, false
 set :monit_configure_postgresql, false
 set :monit_configure_unicorn, false
@@ -80,7 +81,7 @@ set :monit_alert_email, nil
 set :monit_nginx_pid, '/var/run/nginx.pid'
 
 # POSTGRESQL TEMPLATE specific settings
-set :monit_postgresql_pid, '/var/run/postgresql/9.3-main.pid'
+set :monit_postgresql_pid, '/var/run/postgresql/9.4-main.pid'
 
 # MONIT TEMPLATE specific settings
 set :monit_gmail_username, nil
